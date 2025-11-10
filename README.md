@@ -3,7 +3,9 @@
 Unified API Tests is a scalable, modular framework for REST API testing built on top of pytest and requests.
 It’s designed to handle multiple APIs (e.g., GoRest, ReqRes, Swagger PetStore) using a single, reusable test architecture.
 
+
 🚀 Key Features
+
 
 ✅ Unified Base Client (BaseAPIClient)
 
@@ -35,7 +37,10 @@ Easily add new API modules with minimal changes
 
 Shared utilities for schema validation, data generation, and assertions
 
+
 🧱 Project Structure
+
+
 unified-api-tests/
 ├── src/
 │   ├── core/              # Core logic (Base client, helpers)
@@ -55,7 +60,10 @@ unified-api-tests/
 ├── requirements.txt
 └── README.md
 
+
 ⚙️ Installation
+
+
 git clone https://github.com/Andrei800/unified-api-tests.git
 cd unified-api-tests
 
@@ -69,13 +77,18 @@ Then create a .env file in the project root:
 BASE_URL=https://gorest.co.in/public/v2
 GOREST_TOKEN=<your_token_here>
 
+
 🧪 Running Tests
+
+
 pytest -v --html=reports/report.html --self-contained-html
 
 
 After execution, open reports/report.html to view the test report.
 
+
 🔄 Continuous Integration
+
 
 Every push to main automatically triggers:
 
