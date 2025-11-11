@@ -10,6 +10,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      BASE_URL: https://gorest.co.in/public/v2  
+      GOREST_TOKEN: ${{ secrets.GOREST_TOKEN || '' }}  
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
