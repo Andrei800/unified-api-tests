@@ -1,23 +1,23 @@
-# conftest.py
 import os
 import pytest
 from dotenv import load_dotenv
-from src.core.base_client import BaseAPIClient
+from src.api.gorest import GorestAPI
 
 @pytest.fixture(scope="session")
-def load_env():
-    """Загружает переменные окружения из .env"""
+def env():
     load_dotenv()
-    return {
-        "base_url": os.getenv("BASE_URL"),
-        "token": os.getenv("GOREST_TOKEN")
-    }
+    base = os.getenv("BASE_URL")
+    token = os.getenv("GOREST_TOKEN")
+    assert base, "BASE_URL is missing in .env"
+    assert token, "GOREST_TOKEN is missing in .env"
+    return {"base_url": base, "token": token}
 
 @pytest.fixture(scope="session")
-def client(load_env):
-    """Единый HTTP клиент для тестов"""
+def gorest(env):
     headers = {
-        "Authorization": f"Bearer {load_env['token']}",
-        "Content-Type": "application/json"
+        "Authorization": f"Bearer {env['token']}",
+        "Content-Type": "application/json",
     }
-    return BaseAPIClient(base_url=load_env["base_url"], headers=headers)
+    api = GorestAPI(env["base_url"], env["token"])
+    api.session.headers.update(headers)         
+    return api
