@@ -1,38 +1,5 @@
-# виртуальное окружение
 .venv/
-env/
-venv/
-
-# кеши и временные файлы
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.swp
-
-# IDE
-.vscode/
-.idea/
-
-# отчёты и артефакты
-reports/
-*.html
-*.xml
-*.log
-
-# данные и вспомогательные файлы
-data/
-tmp/
-*.csv
-*.json
-
-# dotenv (токены, ключи и секреты)
 .env
-.env.*
-
-# node_modules (если появятся фронт-тулы)
-node_modules/
-
-# системные
-.DS_Store
-Thumbs.db
+reports/
