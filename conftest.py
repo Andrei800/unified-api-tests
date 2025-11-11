@@ -1,7 +1,10 @@
 import os
+
 import pytest
 from dotenv import load_dotenv
+
 from src.api.gorest import GorestAPI
+
 
 @pytest.fixture(scope="session")
 def env():
@@ -12,6 +15,7 @@ def env():
     assert token, "GOREST_TOKEN is missing in .env"
     return {"base_url": base, "token": token}
 
+
 @pytest.fixture(scope="session")
 def gorest(env):
     headers = {
@@ -19,5 +23,5 @@ def gorest(env):
         "Content-Type": "application/json",
     }
     api = GorestAPI(env["base_url"], env["token"])
-    api.session.headers.update(headers)         
+    api.session.headers.update(headers)
     return api

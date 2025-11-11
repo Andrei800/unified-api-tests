@@ -1,6 +1,8 @@
 # tests/reqres/test_users_reqres.py
 import time
+
 import pytest
+
 from src.api.reqres import ReqresAPI
 
 

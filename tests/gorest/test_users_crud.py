@@ -1,5 +1,7 @@
 import time
+
 import pytest
+
 
 @pytest.mark.e2e
 def test_create_get_delete_user(gorest):

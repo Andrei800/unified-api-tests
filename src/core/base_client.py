@@ -1,24 +1,38 @@
 # src/core/base_client.py
 from __future__ import annotations
-import os, time, random, datetime, threading, logging
+
+import datetime
+import logging
+import os
+import random
+import threading
+import time
 from email.utils import parsedate_to_datetime
-import requests, backoff
+
+import backoff
+import requests
 
 log = logging.getLogger("api")
 
+
 class BaseAPIClient:
     """Базовый HTTP-клиент: общий для любых REST API."""
+
     _lock = threading.Lock()
     _next_allowed_time = 0.0  # для троттлинга в CI
 
-    def __init__(self, base_url: str, headers: dict | None = None, timeout: float = 15.0):
+    def __init__(
+        self, base_url: str, headers: dict | None = None, timeout: float = 15.0
+    ):
         self.base = base_url.rstrip("/")
         self.timeout = timeout
         self.session = requests.Session()
         if headers:
             self.session.headers.update(headers)
 
-    @backoff.on_exception(backoff.expo, (requests.Timeout, requests.ConnectionError), max_time=30)
+    @backoff.on_exception(
+        backoff.expo, (requests.Timeout, requests.ConnectionError), max_time=30
+    )
     def request(self, method: str, path: str, **kw) -> requests.Response:
         url = f"{self.base}{path}"
         max_attempts = kw.pop("max_attempts", 6)
@@ -37,7 +51,13 @@ class BaseAPIClient:
                     BaseAPIClient._next_allowed_time = time.time() + min_interval
 
             resp = self.session.request(method, url, timeout=self.timeout, **kw)
-            log.debug("HTTP %s %s -> %s in %.3fs", method, path, resp.status_code, resp.elapsed.total_seconds())
+            log.debug(
+                "HTTP %s %s -> %s in %.3fs",
+                method,
+                path,
+                resp.status_code,
+                resp.elapsed.total_seconds(),
+            )
 
             if resp.status_code != 429:
                 return resp
@@ -52,15 +72,24 @@ class BaseAPIClient:
                 else:
                     try:
                         dt = parsedate_to_datetime(s)
-                        delay = max(0.0, (dt - datetime.datetime.now(tz=dt.tzinfo)).total_seconds())
+                        delay = max(
+                            0.0,
+                            (dt - datetime.datetime.now(tz=dt.tzinfo)).total_seconds(),
+                        )
                     except Exception:
                         delay = None
 
             if delay is None:
-                delay = min(base_delay * (2 ** (attempt - 1)), cap_delay) + random.uniform(0.0, 0.3)
+                delay = min(
+                    base_delay * (2 ** (attempt - 1)), cap_delay
+                ) + random.uniform(0.0, 0.3)
 
             if attempt == max_attempts:
-                log.warning("429 after %d attempts, giving up (last delay=%.2fs)", attempt, delay)
+                log.warning(
+                    "429 after %d attempts, giving up (last delay=%.2fs)",
+                    attempt,
+                    delay,
+                )
                 return resp
 
             time.sleep(delay)

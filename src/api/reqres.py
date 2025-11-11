@@ -6,8 +6,7 @@ class ReqresAPI(BaseAPIClient):
     """Wrapper for https://reqres.in public API (no auth)."""
 
     def __init__(self, base_url: str = "https://reqres.in/api"):
-        # В твоём BaseAPIClient токен позиционный — передаём пустую строку
-        super().__init__(base_url, token="")
+        super().__init__(base_url, "")
 
     def create_user(self, payload: dict):
         """POST /users — creates a user (returns id, createdAt)."""
