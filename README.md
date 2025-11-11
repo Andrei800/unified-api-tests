@@ -45,25 +45,25 @@ This project demonstrates a real-world QA automation setup — with environment 
 ---
 
 ## 🧱 Project Structure
+
+```text
 unified-api-tests/
 ├── src/
-│ ├── core/ # Core logic (Base client, retry logic)
-│ │ └── base_client.py
-│ ├── api/ # Specific API wrappers (GoRest, ReqRes, PetStore)
-│ └── utils/ # Helper functions, validators, etc.
-│
+│   ├── core/
+│   │   └── base_client.py
+│   ├── api/
+│   └── utils/
 ├── tests/
-│ ├── gorest/ # GoRest API test suite
-│ ├── reqres/ # ReqRes API test suite
-│ └── petstore/ # PetStore Swagger tests
-│
-├── reports/ # HTML reports (pytest-html)
-├── .github/workflows/ # CI/CD workflow configs
-├── conftest.py # Fixtures and env loader
+│   ├── gorest/
+│   ├── reqres/
+│   └── petstore/
+├── reports/
+├── .github/workflows/
+├── conftest.py
 ├── pytest.ini
 ├── requirements.txt
 └── README.md
-
+```
 
 
 ---
@@ -108,17 +108,12 @@ Each push to the main branch automatically triggers:
 
 - Upload of the HTML report as an artifact
 
-Status	Description
-<p align="center">
-
-🟢 Build Passing — CI pipeline completed successfully
-<br>
-🧩 Python 3.12 — Compatible and validated version
-<br>
-🧪 Pytest — Core testing engine
-<br>
-☁️ GitHub Actions — Automated test runs on every push
-
+  
+<b>Status	Description</b><br>
+🟢 <b>Build Passing</b> — CI pipeline completed successfully<br>
+🧩 <b>Python 3.12</b> — Compatible and validated version<br>
+🧪 <b>Pytest</b> — Core testing engine<br>
+☁️ <b>GitHub Actions</b> — Automated runs on every push
 </p>
 
 
