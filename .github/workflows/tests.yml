@@ -40,11 +40,11 @@ jobs:
           pytest -v -m "e2e or smoke" \
             --html=reports/index.html \
             --self-contained-html \
-            --metadata "Run Number=${{ github.run_number }}" \
-            --metadata "Run ID=${{ github.run_id }}" \
-            --metadata "Commit=${{ github.sha }}" \
-            --metadata "Actor=${{ github.actor }}" \
-            --metadata "OS=$(uname -a)"
+            --metadata "Run Number" "${{ github.run_number }}" \
+            --metadata "Run ID" "${{ github.run_id }}" \
+            --metadata "Commit" "${{ github.sha }}" \
+            --metadata "Actor" "${{ github.actor }}" \
+            --metadata "OS" "$(uname -a)"
 
       - name: Upload report as CI artifact (for download)
         if: always()
