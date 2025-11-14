@@ -1,4 +1,3 @@
-# src/api/reqres.py
 from src.core.base_client import BaseAPIClient
 
 
@@ -6,7 +5,11 @@ class ReqresAPI(BaseAPIClient):
     """Wrapper for https://reqres.in public API (no auth)."""
 
     def __init__(self, base_url: str = "https://reqres.in/api"):
+        # Твой BaseAPIClient принимает base_url и token — передаём пустой токен
         super().__init__(base_url, "")
+        # Чистим лишние заголовки (особенно Authorization)
+        self.session.headers.clear()
+        self.session.headers.update({"Content-Type": "application/json"})
 
     def create_user(self, payload: dict):
         """POST /users — creates a user (returns id, createdAt)."""

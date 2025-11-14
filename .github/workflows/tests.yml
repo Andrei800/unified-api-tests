@@ -3,6 +3,9 @@ on: { push: { branches: [ main ] }, pull_request: { branches: [ main ] }, workfl
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      BASE_URL: https://gorest.co.in/public/v2  
+      GOREST_TOKEN: ${{ secrets.GOREST_TOKEN || '' }}  
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
