@@ -1,19 +1,73 @@
-name: API Tests
-on: { push: { branches: [ main ] }, pull_request: { branches: [ main ] }, workflow_dispatch: {} }
+name: tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: "0 2 * * *"   # nightly, 02:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write      # для деплоя GitHub Pages
+  id-token: write   # требуется для deploy-pages
+
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      BASE_URL: https://gorest.co.in/public/v2  
-      GOREST_TOKEN: ${{ secrets.GOREST_TOKEN || '' }}  
+      BASE_URL: https://gorest.co.in/public/v2
+      GOREST_TOKEN: ${{ secrets.GOREST_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - run: |
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install deps
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - run: |
-          pytest -v --html=reports/report.html --self-contained-html
-      - uses: actions/upload-artifact@v4
-        with: { name: pytest-report, path: reports/report.html }
+
+      - name: Run pytest (HTML report)
+        run: |
+          mkdir -p reports
+          pytest -v -m "e2e or smoke" \
+            --html=reports/index.html \
+            --self-contained-html \
+            --metadata "Run Number=${{ github.run_number }}" \
+            --metadata "Run ID=${{ github.run_id }}" \
+            --metadata "Commit=${{ github.sha }}" \
+            --metadata "Actor=${{ github.actor }}" \
+            --metadata "OS=$(uname -a)"
+
+      - name: Upload report as CI artifact (for download)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: reports/
+
+      # публикуем тот же HTML как GitHub Pages
+      - name: Upload Pages artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports/
+
+  deploy-pages:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()  # чтобы страница обновлялась даже при упавших тестах (можно поставить success() если хочешь только зелёные)
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
